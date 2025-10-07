@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Business Card QR</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #001f3f, #0074D9);
+      color: white;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    #qrcode {
+      background: white;
+      padding: 15px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    footer {
+      margin-top: 30px;
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Scan to Connect with Me</h1>
+  <div id="qrcode"></div>
+  <footer>© 2025 Your Name</footer>
+
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    // Replace this with your website, LinkedIn, or contact page
+    const link = "https://your-website-or-link.com";
+
+    new QRCode(document.getElementById("qrcode"), {
+      text: link,
+      width: 180,
+      height: 180,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+  </script>
+</body>
+</html>
