@@ -3,56 +3,147 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Business Card QR</title>
+  <title>~ $ navanit@naavi</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
     body {
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
-      background: linear-gradient(135deg, #001f3f, #0074D9);
-      color: white;
-      text-align: center;
+      height: 100vh;
+      background: black;
+      color: #00ff00;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 16px;
+      padding: 20px;
+      overflow-y: hidden;
     }
-    h1 {
-      font-size: 2em;
-      margin-bottom: 20px;
+
+    #terminal {
+      max-width: 900px;
+      margin: auto;
+      white-space: pre-wrap;
     }
-    #qrcode {
-      background: white;
-      padding: 15px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+
+    .prompt::before {
+      content: "user@naavi:~$ ";
+      color: #00ff00;
     }
-    footer {
-      margin-top: 30px;
-      font-size: 0.9em;
-      opacity: 0.8;
+
+    .cursor {
+      display: inline-block;
+      background: #00ff00;
+      width: 10px;
+      height: 18px;
+      animation: blink 1s infinite;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    a {
+      color: #00ff00;
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <h1>Scan to Connect with Me</h1>
-  <div id="qrcode"></div>
-  <footer>© 2025 Your Name</footer>
+  <div id="terminal"></div>
 
-  <!-- QRCode.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
-    // Replace this with your website, LinkedIn, or contact page
-    const link = "https://your-website-or-link.com";
+    const terminal = document.getElementById("terminal");
 
-    new QRCode(document.getElementById("qrcode"), {
-      text: link,
-      width: 180,
-      height: 180,
-      colorDark : "#000000",
-      colorLight : "#ffffff",
-      correctLevel : QRCode.CorrectLevel.H
-    });
+    const commands = {
+      help: `
+Available commands:
+  about       - Learn about me
+  projects    - See my work
+  contact     - Get in touch
+  clear       - Clear the terminal
+      `,
+      about: `
+Hi, I'm Navanit — Founder of NAAVI Aerospace and Technologies.
+I'm passionate about autonomous UAVs, AI, and space systems.
+I love creating technology that bridges innovation with exploration.
+      `,
+      projects: `
+🚀 Projects:
+  - High Payload Logistics Drone
+  - Autonomous Swarm Drone System
+  - Space Weather Modelling Platform
+  - Urban Air Mobility Solutions
+      `,
+      contact: `
+📧 Email: navanit@naaviaerospace.in
+🌐 Website: https://naaviaerospace.in
+🔗 LinkedIn: https://linkedin.com/in/navanit
+      `
+    };
+
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    async function typeText(text, element) {
+      for (let char of text) {
+        element.innerHTML += char;
+        await delay(20);
+      }
+    }
+
+    async function runTerminal() {
+      await typeText("Welcome to Navanit’s Terminal Portfolio.\nType 'help' to begin.\n\n", terminal);
+
+      while (true) {
+        const prompt = document.createElement("div");
+        prompt.classList.add("prompt");
+        prompt.innerHTML = "";
+        terminal.appendChild(prompt);
+
+        const cursor = document.createElement("span");
+        cursor.classList.add("cursor");
+        prompt.appendChild(cursor);
+
+        let command = await getUserInput(prompt, cursor);
+
+        if (commands[command]) {
+          terminal.innerHTML += "\n" + commands[command] + "\n";
+        } else if (command === "clear") {
+          terminal.innerHTML = "";
+        } else if (command.trim() !== "") {
+          terminal.innerHTML += `\nCommand not found: ${command}\n`;
+        }
+      }
+    }
+
+    function getUserInput(prompt, cursor) {
+      return new Promise(resolve => {
+        let input = "";
+        document.addEventListener("keydown", function handler(e) {
+          if (e.key === "Enter") {
+            document.removeEventListener("keydown", handler);
+            cursor.remove();
+            prompt.innerHTML += "\n";
+            resolve(input.trim());
+          } else if (e.key === "Backspace") {
+            input = input.slice(0, -1);
+            prompt.innerHTML = "user@naavi:~$ " + input;
+            prompt.appendChild(cursor);
+          } else if (e.key.length === 1) {
+            input += e.key;
+            prompt.innerHTML = "user@naavi:~$ " + input;
+            prompt.appendChild(cursor);
+          }
+        });
+      });
+    }
+
+    runTerminal();
   </script>
 </body>
 </html>
